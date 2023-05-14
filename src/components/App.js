@@ -257,7 +257,8 @@ function App() {
         {/*Секция заголовок ======================================= */}
         <Header
           loggedIn={loggedIn}
-          userEmail={userEmail}
+          email={userEmail}
+          password{userPwd}
           btnText={headerBtnText}
           onTogglePage={handleTogglePage}
           onLogOut={handleLogOut}
