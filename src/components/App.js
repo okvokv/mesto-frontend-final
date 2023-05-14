@@ -87,7 +87,6 @@ function App() {
       .then(data => {
         // сохранить полученный жетон
         localStorage.setItem('jwt', data.token); // или он сам сохраняется в куках
-        setUserEmail(email);
         setLoggedIn(true);
         navigate('/');
       })
