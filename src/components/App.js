@@ -84,9 +84,9 @@ function App() {
   function handleLogIn(email, password) {
     auth.logIn(email, password)
       .then(data => {
+        console.log(data);
         setLoggedIn(true);
-        // сохранить полученный жетон
-        // localStorage.setItem('jwt', data.token); // или он сам сохраняется в куках
+        // жетон сам сохраняется в куках
         navigate('/');
       })
       .catch(err => {
@@ -128,10 +128,16 @@ function App() {
     navigate('/sign-in');
   };
 
+  //функция удаления кук с жетоном
+  function removeCookie(name) {
+    document.cookie = `${name}=; maxAge=0; path=/`;
+  }
+
   //функция обработки выхода с сайта
   function handleLogOut() {
     setLoggedIn(false);
-    localStorage.removeItem('jwt');
+    // localStorage.removeItem('jwt'); // удаление жетона из локального хранилища 
+    removeCookie('jwt');// удаление жетона, сохранённого в куках
     setUserEmail('');
     setUserPwd('');
     setSubmitBtnText('Войти');
