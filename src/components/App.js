@@ -5,9 +5,9 @@ import auth from '../utils/auth.js';
 import api from '../utils/api.js';
 import Header from './Header.js';
 import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-import Register from './Register.js';
-import Login from './Login.js';
 import ProtectedRoute from './ProtectedRoute.js';
+import Login from './Login.js';
+import Register from './Register.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
 import AvatarEditPopup from './EditAvatarPopup.js'
@@ -27,19 +27,19 @@ function App() {
   const [errorSpans, setErrorSpans] = useState('');
   //объявление состояния индикатора входа в глобальной области
   const [loggedIn, setLoggedIn] = useState(false);
+  //задание переменной навигации и извлечения теущего адреса
+  const navigate = useNavigate();
+  const location = useLocation();
   //задание текста кнопки header'а в глобальной области
-  const [headerBtnText, setHeaderBtnText] = useState('Регистрация')
+  const [headerBtnText, setHeaderBtnText] = useState(location.pathname === '/sign-up' ? 'Вход' : 'Регистрация')
   //задание текста кнопки сохранения в глобальной области
   const [submitBtnText, setSubmitBtnText] = useState('Войти');
   //объявление данных пользователя в глобальной области
   const [currentUserData, setCurrentUserData] = useState({ name: 'Жак-Ив Кусто', about: 'Исследователь океана', avatar: avatar });
-  //задание переменной навигации и извлечения теущего адреса
-  const navigate = useNavigate();
-  const location = useLocation();
   //объявление данных массива карточек в глобальной области
   const [cardsData, setCardsData] = useState([]);
 
-  // сверка жетона при открытии страницы
+  // сверка жетона при открытии страницы и получение данных
   useEffect(() => {
     api.getUserData()
       .then(userData => {
@@ -79,7 +79,6 @@ function App() {
     setSubmitBtnText(text);
   };
 
-  //----------------------------------------------------------------------------
   //функция отправки данных для авторизации и обработки ответа
   function handleLogIn(email, password) {
     auth.logIn(email, password)
@@ -127,19 +126,25 @@ function App() {
     navigate('/sign-in');
   };
 
-  //функция удаления кук с жетоном
-  function removeCookie() {
-    document.cookie = 'token=; maxAge=0; path=/;' ;
-  }
+  // функция удаления кук с жетоном
+  // function removeCookie() {
+  // document.cookie = 'token=; maxAge=0; path=/;';
+  // }
 
   //функция обработки выхода с сайта
   function handleLogOut() {
-    setLoggedIn(false);
-    removeCookie(); // удаление жетона, сохранённого в куках
-    setUserEmail('');
-    setUserPwd('');
-    setSubmitBtnText('Войти');
-    navigate('/sign-in');
+    // removeCookie(); // удаление жетона, сохранённого в куках, если они не скрытые
+    auth.logOut()
+      .then(() => {
+        setLoggedIn(false);
+        setUserEmail('');
+        setUserPwd('');
+        setSubmitBtnText('Войти');
+        navigate('/sign-in');
+      })
+      .catch(err => {
+        console.log('Внутренняя ошибка: ', err);
+      })
   };
 
   //----------------------------------------------------------------------------------
@@ -243,7 +248,6 @@ function App() {
       })
   };
 
-  //-----------------------------------------------------------------------
   //функция обработки нажатия на кнопку <Like>
   function handleLikeClick(cardId, liked) {
     //запрос в api, получение обновлённых данных карточки и замена их в массиве
@@ -313,7 +317,8 @@ function App() {
             />}
           />
           <Route path='*' element={
-            <Navigate to='/' replace />}
+            <Navigate to='/' replace />
+          }
           />
         </Routes>
 
