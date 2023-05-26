@@ -6,7 +6,7 @@ class Auth extends BaseApi {
 		this._headers = { 'Content-Type': 'application/json' };
 	}
 
-	//метод регистрации пользователя
+	//метод регистрации пользователя (если регистрация - это одновременно и login, то надо разрешить принимать куки)
 	registrate(_email, _password) {
 		return this._request('signup', {
 			method: 'POST',
@@ -22,6 +22,7 @@ class Auth extends BaseApi {
 	logIn(_email, _password) {
 		return this._request('signin', {
 			method: 'POST',
+			credentials: 'include', // разрешить браузеру отсылать и принимать куки
 			headers: this._headers,
 			body: JSON.stringify({
 				email: _email,
@@ -29,6 +30,15 @@ class Auth extends BaseApi {
 			})
 		})
 	};
+
+	//метод разлогинивания пользователя
+	logOut(){
+		return this._request('signout', {
+			method: 'DELETE',
+			credentials: 'include',
+			headers: this._headers,
+	})
+};
 
 };
 
