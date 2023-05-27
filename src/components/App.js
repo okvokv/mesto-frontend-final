@@ -134,7 +134,7 @@ function App() {
   //функция обработки выхода с сайта
   function handleLogOut() {
     // removeCookie(); // удаление жетона, сохранённого в куках, если они не скрытые
-    auth.logOut()
+    auth.removeCookie()
       .then(() => {
         setLoggedIn(false);
         setUserEmail('');
